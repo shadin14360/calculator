@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Modern Calculator UI</title>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;}
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#d7d9dd;
+    overflow:hidden;
+  }
+
+  /* Background orange rings like picture */
+  .ring{
+    position:absolute;
+    border:7px solid #ff8a00;
+    border-radius:50%;
+    opacity:.65;
+  }
+  .r1{ width:240px; height:240px; right:-70px; top:70px;}
+  .r2{ width:170px; height:170px; left:-60px; bottom:-40px;}
+
+  .wrap{
+    display:flex;
+    gap:28px;
+    z-index:2;
+  }
+
+  /* Common calculator card */
+  .calc{
+    width:250px;
+    border-radius:28px;
+    padding:18px 18px 22px;
+    position:relative;
+    box-shadow: 0 20px 35px rgba(0,0,0,.18);
+  }
+
+  .top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:2px 4px 10px;
+    opacity:.9;
+    font-size:14px;
+  }
+
+  .mic{
+    width:26px;height:26px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+  }
+
+  .screen{
+    text-align:right;
+    padding:6px 6px 12px;
+  }
+  .mini{
+    font-size:11px;
+    opacity:.6;
+    letter-spacing:.2px;
+    margin-bottom:6px;
+  }
+  .value{
+    font-size:36px;
+    font-weight:700;
+    letter-spacing:.5px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:12px;
+    margin-top:10px;
+  }
+
+  .btn{
+    height:52px;
+    border:none;
+    border-radius:16px;
+    font-size:18px;
+    cursor:pointer;
+    transition:transform .15s ease, filter .15s ease;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    user-select:none;
+  }
+  .btn:active{ transform:scale(.97); }
+
+  /* DARK THEME */
+  .dark{
+    background: #16181d;
+    color:white;
+  }
+  .dark .mic{
+    background:#20232b;
+    color:#c7c7c7;
+  }
+  .dark .btn{
+    background:#1f232c;
+    color:#dfe3ea;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .dark .btn.gray{
+    background:#2a2f3a;
+    color:#e7e9ee;
+  }
+  .dark .btn.op{
+    background:#ff8a00;
+    color:white;
+    font-weight:700;
+  }
+
+  /* LIGHT THEME */
+  .light{
+    background:#f4f6f8;
+    color:#111;
+  }
+  .light .mic{
+    background:#e8ecf1;
+    color:#333;
+  }
+  .light .btn{
+    background:#e9eef3;
+    color:#1a1a1a;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+  }
+  .light .btn.gray{
+    background:#dfe7ee;
+    color:#111;
+  }
+  .light .btn.op{
+    background:#ff8a00;
+    color:white;
+    font-weight:800;
+  }
+
+  /* Make it look close to picture */
+  .btn.op{ border-radius:18px; }
+</style>
+</head>
+
+<body>
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+
+  <div class="wrap">
+
+    <!-- DARK CALC -->
+    <div class="calc dark" id="calcDark">
+      <div class="top">
+        <div class="mic">🎙</div>
+        <div style="opacity:.55;font-size:12px;"> </div>
+      </div>
+
+      <div class="screen">
+        <div class="mini" id="miniDark">4,500 + 15,910</div>
+        <div class="value" id="displayDark">20,810</div>
+      </div>
+
+      <div class="grid">
+        <button class="btn gray" onclick="press('C','dark')">C</button>
+        <button class="btn gray" onclick="press('+/-','dark')">+/-</button>
+        <button class="btn gray" onclick="press('%','dark')">%</button>
+        <button class="btn op" onclick="press('/','dark')">÷</button>
+
+        <button class="btn" onclick="press('7','dark')">7</button>
+        <button class="btn" onclick="press('8','dark')">8</button>
+        <button class="btn" onclick="press('9','dark')">9</button>
+        <button class="btn op" onclick="press('*','dark')">×</button>
+
+        <button class="btn" onclick="press('4','dark')">4</button>
+        <button class="btn" onclick="press('5','dark')">5</button>
+        <button class="btn" onclick="press('6','dark')">6</button>
+        <button class="btn op" onclick="press('-','dark')">−</button>
+
+        <button class="btn" onclick="press('1','dark')">1</button>
+        <button class="btn" onclick="press('2','dark')">2</button>
+        <button class="btn" onclick="press('3','dark')">3</button>
+        <button class="btn op" onclick="press('+','dark')">+</button>
+
+        <button class="btn" style="grid-column: span 2;" onclick="press('0','dark')">0</button>
+        <button class="btn" onclick="press('.','dark')">.</button>
+        <button class="btn op" onclick="press('=','dark')">=</button>
+      </div>
+    </div>
+
+    <!-- LIGHT CALC -->
+    <div class="calc light" id="calcLight">
+      <div class="top">
+        <div class="mic">🎙</div>
+      </div>
+
+      <div class="screen">
+        <div class="mini" id="miniLight">30,820 − 9,205</div>
+        <div class="value" id="displayLight">40,025</div>
+      </div>
+
+      <div class="grid">
+        <button class="btn gray" onclick="press('C','light')">C</button>
+        <button class="btn gray" onclick="press('+/-','light')">+/-</button>
+        <button class="btn gray" onclick="press('%','light')">%</button>
+        <button class="btn op" onclick="press('/','light')">÷</button>
+
+        <button class="btn" onclick="press('7','light')">7</button>
+        <button class="btn" onclick="press('8','light')">8</button>
+        <button class="btn" onclick="press('9','light')">9</button>
+        <button class="btn op" onclick="press('*','light')">×</button>
+
+        <button class="btn" onclick="press('4','light')">4</button>
+        <button class="btn" onclick="press('5','light')">5</button>
+        <button class="btn" onclick="press('6','light')">6</button>
+        <button class="btn op" onclick="press('-','light')">−</button>
+
+        <button class="btn" onclick="press('1','light')">1</button>
+        <button class="btn" onclick="press('2','light')">2</button>
+        <button class="btn" onclick="press('3','light')">3</button>
+        <button class="btn op" onclick="press('+','light')">+</button>
+
+        <button class="btn" style="grid-column: span 2;" onclick="press('0','light')">0</button>
+        <button class="btn" onclick="press('.','light')">.</button>
+        <button class="btn op" onclick="press('=','light')">=</button>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // store values separately for both calculators
+  const state = {
+    dark: { exp: "", last: "" },
+    light:{ exp: "", last: "" }
+  };
+
+  function fmt(numStr){
+    // add commas (20,810)
+    if(numStr === "" || numStr === "-") return numStr;
+    const n = Number(numStr.replaceAll(",",""));
+    if (isNaN(n)) return numStr;
+    return n.toLocaleString("en-US");
+  }
+
+  function getDisplay(mode){
+    return document.getElementById(mode === "dark" ? "displayDark" : "displayLight");
+  }
+  function getMini(mode){
+    return document.getElementById(mode === "dark" ? "miniDark" : "miniLight");
+  }
+
+  function press(val, mode){
+    const st = state[mode];
+    const display = getDisplay(mode);
+    const mini = getMini(mode);
+
+    if(val === "C"){
+      st.exp = "";
+      st.last = "";
+      display.textContent = "0";
+      mini.textContent = "";
+      return;
+    }
+
+    if(val === "+/-"){
+      if(st.exp.startsWith("-")) st.exp = st.exp.slice(1);
+      else st.exp = "-" + st.exp;
+      display.textContent = fmt(st.exp);
+      return;
+    }
+
+    if(val === "="){
+      try{
+        let safe = st.exp.replaceAll("÷","/").replaceAll("×","*");
+        safe = safe.replaceAll(",","");
+        if(safe.trim() === "") return;
+
+        const res = eval(safe);
+        mini.textContent = st.exp;
+        st.exp = String(res);
+        display.textContent = fmt(st.exp);
+      }catch(e){
+        display.textContent = "Error";
+      }
+      return;
+    }
+
+    // Operators
+    const operators = ["+","-","*","/","÷","×","%"];
+    const lastChar = st.exp.slice(-1);
+
+    if(operators.includes(val)){
+      if(st.exp === "") return;
+      if(operators.includes(lastChar)){
+        st.exp = st.exp.slice(0,-1) + val;
+      }else{
+        st.exp += val;
+      }
+      mini.textContent = st.exp;
+      return;
+    }
+
+    // numbers / dot
+    st.exp += val;
+    display.textContent = fmt(st.exp);
+  }
+</script>
+</body>
+</html>
